@@ -4,6 +4,7 @@ import { useLocalStorage } from 'usehooks-ts';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { Button } from './components/ui/button';
+import { useKeyDown } from './lib/useKeyDown';
 
 type Img = {
   id: string;
@@ -24,9 +25,15 @@ const url =
   'https://datasets-server.huggingface.co/rows?dataset=vivym%2Fmidjourney-messages&config=default&split=train';
 
 function App() {
-  const [current, setCurrent] = useLocalStorage('current-prompt', 28);
+  const [current, setCurrent] = useLocalStorage('current-prompt', 0);
   const offset = 100 * Math.floor(current / 100);
   const { data } = useSWR<Img[]>(url + `&offset=${offset}&length=100`, fetcher);
+
+  const left = () => setCurrent(Math.max(0, current - 1));
+  const right = () => setCurrent(current + 1);
+
+  useKeyDown(left, ['ArrowLeft'])
+  useKeyDown(right, ['ArrowRight'])
 
   return (
     <section className="container text-center mt-10">
@@ -38,12 +45,12 @@ function App() {
           <div className="flex flex-row gap-2 items-center justify-center">
             <Button
               variant="outline"
-              onClick={() => setCurrent(Math.max(0, current - 1))}
+              onClick={() => left()}
             >
               <ChevronLeft />
             </Button>
             <div>Prompt #{current}</div>
-            <Button variant="outline" onClick={() => setCurrent(current + 1)}>
+            <Button variant="outline" onClick={() => right()}>
               <ChevronRight />
             </Button>
           </div>
