@@ -41,20 +41,20 @@ function App() {
         {!data?.length ? 'Loading...' : 'Midjourney Prompts'}
       </h1>
       {!data?.length ? null : (
-        <div className="mt-5 align-center">
+        <div className="my-5 flex flex-col gap-4">
           <div className="flex flex-row gap-2 items-center justify-center">
             <Button
               variant="outline"
-              onClick={() => left()}
+              onClick={() => setCurrent(Math.max(0, current - 1))}
             >
               <ChevronLeft />
             </Button>
             <div>Prompt #{current}</div>
-            <Button variant="outline" onClick={() => right()}>
+            <Button variant="outline" onClick={() => setCurrent(current + 1)}>
               <ChevronRight />
             </Button>
           </div>
-          <div className="mt-5">{data[current - offset].prompt}</div>
+          <div className="mt-2">{data[current - offset].prompt}</div>
           <img className="m-auto" src={data[current - offset].image} />
         </div>
       )}
